@@ -1,0 +1,8 @@
+﻿  GD2P03_ex1.cpp
+D:\Users\mds2000144\source\repos\GD2P03_ex1\GD2P03_ex1\GD2P03_ex1.cpp(116,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating code
+  3 of 27 functions (11.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  GD2P03_ex1.vcxproj -> D:\Users\mds2000144\source\repos\GD2P03_ex1\Release\GD2P03_ex1.exe
