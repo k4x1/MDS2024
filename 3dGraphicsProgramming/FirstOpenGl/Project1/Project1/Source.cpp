@@ -11,7 +11,7 @@ void InitialSetup()
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     glViewport(0, 0, 800, 800);
 
-    Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert", "Resources/Shaders/FixedColor.frag");
+    Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert", "Resources/FixedColor.frag");
 
     
 }

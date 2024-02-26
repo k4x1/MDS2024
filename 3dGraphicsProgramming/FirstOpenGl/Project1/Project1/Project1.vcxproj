@@ -137,7 +137,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="Source.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ShaderLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\FixedColor.frag" />
+    <None Include="Resources\Shaders\FixedTriangle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
