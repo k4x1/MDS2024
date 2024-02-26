@@ -5,13 +5,21 @@
 
 GLFWwindow* Window = nullptr;
 GLuint Program_FixedTri = 0;
-
+GLfloat Vertices_Tri[] = { 0.0f, 0.0f, 0.0f,
+                          -0.5f, 0.8f, 0.0f,
+                           0.5f, 0.8f, 0.0f };
+GLuint Program_PositionOnly;
+GLuint VBO_Tri;
 void InitialSetup()
 {
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     glViewport(0, 0, 800, 800);
 
-    Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert", "Resources/FixedColor.frag");
+    Program_FixedTri = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert", "Resources/Shaders/FixedColor.frag");
+    //vbo gen
+    glGenBuffers(1, &VBO_Tri);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices_Tri),Vertices_Tri,GL_STATIC_DRAW);
 
 
 }
