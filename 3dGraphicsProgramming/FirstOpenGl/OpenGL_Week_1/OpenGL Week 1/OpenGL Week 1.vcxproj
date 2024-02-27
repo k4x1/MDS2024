@@ -143,6 +143,9 @@
   <ItemGroup>
     <None Include="Resources\Shaders\FixedColor.frag" />
     <None Include="Resources\Shaders\FixedTriangle.vert" />
+    <None Include="Resources\Shaders\VertexColor.frag" />
+    <None Include="Resources\Shaders\VertexColor.vert" />
+    <None Include="Resources\Shaders\VertexColorFade.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderLoader.h" />

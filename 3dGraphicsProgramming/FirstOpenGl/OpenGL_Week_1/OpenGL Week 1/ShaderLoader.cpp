@@ -9,6 +9,8 @@ ShaderLoader::~ShaderLoader(void) {}
 
 GLuint ShaderLoader::CreateProgram(const char* vertexShaderFilename, const char* fragmentShaderFilename)
 {
+
+	
 	// Create the shaders from the filepath
 	GLuint vertexShaderID = CreateShader(GL_VERTEX_SHADER, vertexShaderFilename);
 	GLuint fragmentShaderID = CreateShader(GL_FRAGMENT_SHADER, fragmentShaderFilename);
