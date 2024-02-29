@@ -16,10 +16,10 @@ GLuint Program_ColorFade = 0;
 GLuint VBO_Tri;
 GLuint VAO_Tri;
 float CurrentTime = 0;
-
+/*
 GLfloat arr[] = {0.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
                       -0.5f, 0.8f, 0.0f,  0.0f, 1.0f, 0.0f,
-                       0.5f, 0.8f, 0.0f,  0.0f, 0.0f, 1.0f, };
+                       0.5f, 0.8f, 0.0f,  0.0f, 0.0f, 1.0f, };*/
 /*war crime
 struct triangleColor {
     GLfloat vx1;
@@ -43,23 +43,20 @@ struct triangleColor {
 
 };*/
 
-void MakeTriangle() {
-
+void MakeTriangle(GLfloat* vertices, GLsizei size) {
     glGenBuffers(1, &VBO_Tri);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices_Tri), Vertices_Tri, GL_STATIC_DRAW);
-
+    glBufferData(GL_ARRAY_BUFFER, size * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 
     glGenVertexArrays(1, &VAO_Tri);
     glBindVertexArray(VAO_Tri);
-    glGenBuffers(1, &VBO_Tri);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices_Tri), Vertices_Tri, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 }
+
+
 void InitialSetup()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -69,8 +66,12 @@ void InitialSetup()
     Program_VertexColor = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColor.frag");
     Program_ColorFade = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColorFade.frag");
     //vbo gen
-    
-    MakeTriangle();
+
+    GLfloat arr[] = { 0.0f,  0.0f,  0.0f,   1.0f,  0.0f,  0.0f,
+                     -0.5f,  0.8f,  0.0f,   0.0f,  1.0f,  0.0f,
+                      0.5f,  0.8f,  0.0f,   0.0f,  0.0f,  1.0f };
+
+    MakeTriangle(arr, sizeof(arr) / sizeof(GLfloat));
 }
 
 void Update()
@@ -91,7 +92,7 @@ void Render()
     GLint CurrentTimeLoc = glGetUniformLocation(Program_ColorFade, "CurrentTime");
     glUniform1f(CurrentTimeLoc, CurrentTime);
 
-    glDrawArrays(GL_QUADS, 0, 4); 
+    glDrawArrays(GL_TRIANGLES, 0, 3); 
     glBindVertexArray(0);
     glUseProgram(0);
     /*
