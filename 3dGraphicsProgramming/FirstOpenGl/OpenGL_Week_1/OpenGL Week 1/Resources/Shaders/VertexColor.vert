@@ -6,7 +6,7 @@ uniform float CurrentTime;
 out vec3 FragColor;
 void main()
 {
-	gl_Position = vec4(Position* abs(sin(CurrentTime)), 1.0f);
+	gl_Position = vec4(Position* sin(CurrentTime), 1.0f);
 	FragColor = Color;
 
 }

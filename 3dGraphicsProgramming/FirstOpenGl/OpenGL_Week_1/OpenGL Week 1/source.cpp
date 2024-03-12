@@ -4,8 +4,11 @@
 #include "ShaderLoader.h"
 
 GLFWwindow* Window = nullptr;
-
+/*
 GLfloat Vertices_Tri[] = { 1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+                          -1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+                           -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,};*/
+GLfloat Vertices_Quad[] = { 1.0f, 1.0f, 0.0f,  1.0f, 0.0f, 0.0f,
                           -1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
                            -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,
                             1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f };
@@ -71,7 +74,8 @@ void InitialSetup()
                      -0.5f,  0.8f,  0.0f,   0.0f,  1.0f,  0.0f,
                       0.5f,  0.8f,  0.0f,   0.0f,  0.0f,  1.0f };
 
-    MakeTriangle(arr, sizeof(arr) / sizeof(GLfloat));
+    MakeTriangle(Vertices_Quad, sizeof(Vertices_Quad) / sizeof(GLfloat));
+
 }
 
 void Update()
@@ -92,7 +96,7 @@ void Render()
     GLint CurrentTimeLoc = glGetUniformLocation(Program_ColorFade, "CurrentTime");
     glUniform1f(CurrentTimeLoc, CurrentTime);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3); 
+    glDrawArrays(GL_QUADS , 0, 4);
     glBindVertexArray(0);
     glUseProgram(0);
     /*
