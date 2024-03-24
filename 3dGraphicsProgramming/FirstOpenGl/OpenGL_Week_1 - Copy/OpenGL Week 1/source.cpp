@@ -20,11 +20,21 @@ GLfloat Vertices_Tri2[] = { -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
                            0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,};
 
 
-GLfloat Vertices_Quad[] = {-0.5f, -0.5f, 0.0f,  /**/   1.0f, 0.0f, 0.0f,  /**/  0.0f, 1.0f,
-                          -0.5f, 0.5f, 0.0f,    /**/   0.0f, 1.0f, 0.0f,  /**/  0.0f, 0.0f,
-                           0.5f, 0.5f, 0.0f,    /**/   0.0f, 0.0f, 1.0f,  /**/  1.0f, 0.0f,
-                           0.5f, -0.5f, 0.0f,   /**/   0.0f, 1.0f, 0.0f,  /**/  1.0f, 1.0f
+GLfloat Vertices_Quad[] = {-0.5f, 0.5f, 0.0f,  /**/   1.0f, 0.0f, 0.0f,  /**/  0.0f, 1.0f,
+                          -0.5f, -0.5f, 0.0f,    /**/   0.0f, 1.0f, 0.0f,  /**/  0.0f, 0.0f,
+                           0.5f, -0.5f, 0.0f,    /**/   1.0f, 0.0f, 1.0f,  /**/  1.0f, 0.0f,
+                           0.5f, 0.5f, 0.0f,   /**/   0.0f, 1.0f, 1.0f,  /**/  1.0f, 1.0f
 };
+glm::vec3 QuadPosition = glm::vec3(0.5f, 0.5f, 0.0f);
+float QuadRotation = 0.0f;
+glm::vec3 QuadScale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+
+glm::mat4 TranslationMat;
+glm::mat4 RotationMat;
+glm::mat4 ScaleMat;
+glm::mat4 QuadModelMat;
+
 GLfloat vertices_Octagon{};
 GLuint Program_PositionOnly = 0;
 GLuint Program_FixedTri = 0;
@@ -87,19 +97,31 @@ void InitialSetup()
     stbi_image_free(ImageData);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
+     
     Program_Texture = ShaderLoader::CreateProgram("Resources/Shaders/Texture.vert", "Resources/Shaders/Texture.frag");
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, CoconutTxr);
-    glUniform1i(glGetUniformLocation(Program_Texture, "Texture0"),0);
+
+   
+    GLint Lock = glGetUniformLocation(Program_Texture, "Texture0");
+
+    glUniform1i(Lock,0);
+    GLenum error = glGetError();
+    //error here??
+   
+    if (error != GL_NO_ERROR) {
+        // Handle error
+        std::cerr << "OpenGL : " << error << std::endl;
+    }
+
+
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glViewport(0, 0, 800, 800);
-/*
+
     Program_PositionOnly = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert", "Resources/Shaders/FixedColor.frag");
     Program_VertexColor = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColor.frag");
-    Program_ColorFade = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColorFade.frag");*/
+    Program_ColorFade = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColorFade.frag");
     //
     
     Hexagon.setShader(Program_Texture);
@@ -110,13 +132,13 @@ void InitialSetup()
 
 void Update()
 {
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error: " << err << std::endl;
-        
-    }
-
     glfwPollEvents();
+   // TranslationMat = glm::translate(glm::mat4(1.0f), QuadPosition);
+    //RotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(QuadRotation), glm::vec3(0.0f,0.0f,1.0f));
+   // ScaleMat = glm::scale(glm::mat4(1.0f), QuadScale);
+   // QuadModelMat = TranslationMat * RotationMat * ScaleMat;
+
+
 
     CurrentTime = (float)glfwGetTime();
   
@@ -125,7 +147,8 @@ void Update()
 void Render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
+  //  GLint ModelMatLoc = glGetUniformLocation(Program_VertexColor, "ModelMat");
+   // glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(QuadModelMat));
 /*
     GLint CurrentTimeLoc = glGetUniformLocation(Program_ColorFade, "CurrentTime");
     glUniform1f(CurrentTimeLoc, CurrentTime);*/
@@ -135,7 +158,7 @@ void Render()
     //plus 1 per different point
 
     glfwSwapBuffers(Window);
-
+ 
 
 
 }
@@ -180,7 +203,7 @@ int main()
 
         Render();
     }
-
+   
     glfwTerminate();
     return 0;
 

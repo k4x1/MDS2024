@@ -59,6 +59,7 @@ GLuint ShaderLoader::CreateShader(GLenum shaderType, const char* shaderName)
 	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compile_result);
 	if (compile_result == GL_FALSE)
 	{
+		
 		PrintErrorDetails(true, shaderID, shaderName);
 		return 0;
 	}
