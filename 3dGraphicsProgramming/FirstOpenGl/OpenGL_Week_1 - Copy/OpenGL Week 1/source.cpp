@@ -12,12 +12,9 @@
  
 GLFWwindow* Window = nullptr;
 
-GLfloat Vertices_Tri1[] = { 0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+GLfloat Vertices_Tri[] = { 0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
                           -0.5f, 0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
                            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,};
-GLfloat Vertices_Tri2[] = { -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-                          0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-                           0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,};
 
 
 GLfloat Vertices_Quad[] = {-0.5f, 0.5f, 0.0f,  /**/   1.0f, 0.0f, 0.0f,  /**/  0.0f, 1.0f,
@@ -25,15 +22,16 @@ GLfloat Vertices_Quad[] = {-0.5f, 0.5f, 0.0f,  /**/   1.0f, 0.0f, 0.0f,  /**/  0
                            0.5f, -0.5f, 0.0f,    /**/   1.0f, 0.0f, 1.0f,  /**/  1.0f, 0.0f,
                            0.5f, 0.5f, 0.0f,   /**/   0.0f, 1.0f, 1.0f,  /**/  1.0f, 1.0f
 };
-glm::vec3 QuadPosition = glm::vec3(0.5f, 0.5f, 0.0f);
-float QuadRotation = 0.0f;
-glm::vec3 QuadScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
+
+glm::vec3 QuadPosition = glm::vec3(1, 1, 1);
+float QuadRotation = 1.0f;
+glm::vec3 QuadScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 glm::mat4 TranslationMat;
 glm::mat4 RotationMat;
 glm::mat4 ScaleMat;
-glm::mat4 QuadModelMat;
+glm::mat4 QuadModelMat = glm::identity<glm::mat4>();
 
 GLfloat vertices_Octagon{};
 GLuint Program_PositionOnly = 0;
@@ -54,7 +52,7 @@ GLfloat hexPositionList[] =
     0.0f, -0.5f,   0.0f,   /**/   1.0f, 1.0f, 1.0f,
     -0.433f, -0.25f, 0.0f,  /**/    1.0f, 1.0f, 0.0f,
     0.433f, -0.25f, 0.0f,  /**/   1.0f, 0.0f, 0.0f,
-    0.433f, 0.25f,  0.0f,  /**/   0.0f, 1.0f, 0.0f,
+    0.433f, 0.25f,  0.0f,  /**/   0.0f, 1.0f, 0.0f, 
     -0.433f, 0.25f, 0.0f,  /**/   0.0f, 1.0f, 1.0f,
     0.0f, 0.5f,  0.0f,     /**/ 1.0f, 0.0f, 1.0f,
 
@@ -82,13 +80,18 @@ float CurrentTime = 0;
 int imageWidth;
 int imageHeight;
 int imageComponents;
-unsigned char* ImageData = stbi_load("Resources/Textures/PotionBottle.png" , &imageWidth,&imageHeight,&imageComponents, 0);
+unsigned char* ImageData = stbi_load("Resources/Textures/coconut.png" , &imageWidth,&imageHeight,&imageComponents, 0);
+
 
 
 //image end
 
 void InitialSetup()
 {
+    if (ImageData == nullptr) {
+        std::cerr << "Failed to load image: Resources/Textures/PotionBottle.png" << std::endl;
+        // Handle the error or return from the function
+    }
    glGenTextures(1, &CoconutTxr);
     glBindTexture(GL_TEXTURE_2D, CoconutTxr);
     GLint LoadedComponents = (imageComponents == 4) ? GL_RGBA : GL_RGB;
@@ -96,49 +99,51 @@ void InitialSetup()
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(ImageData);
     glBindTexture(GL_TEXTURE_2D, 0);
-
-     
-    Program_Texture = ShaderLoader::CreateProgram("Resources/Shaders/Texture.vert", "Resources/Shaders/Texture.frag");
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, CoconutTxr);
-
    
-    GLint Lock = glGetUniformLocation(Program_Texture, "Texture0");
-
-    glUniform1i(Lock,0);
-    GLenum error = glGetError();
-    //error here??
-   
-    if (error != GL_NO_ERROR) {
-        // Handle error
-        std::cerr << "OpenGL : " << error << std::endl;
-    }
-
-
-    
+  
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glViewport(0, 0, 800, 800);
 
+    Program_Texture = ShaderLoader::CreateProgram("Resources/Shaders/Texture.vert", "Resources/Shaders/Texture.frag");
     Program_PositionOnly = ShaderLoader::CreateProgram("Resources/Shaders/FixedTriangle.vert", "Resources/Shaders/FixedColor.frag");
     Program_VertexColor = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColor.frag");
     Program_ColorFade = ShaderLoader::CreateProgram("Resources/Shaders/VertexColor.vert", "Resources/Shaders/VertexColorFade.frag");
     //
-    
-    Hexagon.setShader(Program_Texture);
+   
     Hexagon.setVertices(Vertices_Quad,sizeof(Vertices_Quad), quadIndexesList, sizeof(quadIndexesList));
 
 
+    
+    glfwPollEvents();
+  
 }
 
 void Update()
 {
-    glfwPollEvents();
-   // TranslationMat = glm::translate(glm::mat4(1.0f), QuadPosition);
-    //RotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(QuadRotation), glm::vec3(0.0f,0.0f,1.0f));
-   // ScaleMat = glm::scale(glm::mat4(1.0f), QuadScale);
-   // QuadModelMat = TranslationMat * RotationMat * ScaleMat;
+ 
+  
+     
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, CoconutTxr);
+    glUniform1i(glGetUniformLocation(Program_Texture, "Texture0"), 0);
 
+    Hexagon.setShader(Program_VertexColor);
+    /*
+    TranslationMat = glm::translate(glm::identity<glm::mat4>(), QuadPosition);
+    RotationMat = glm::rotate(glm::identity<glm::mat4>(), glm::radians(QuadRotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    ScaleMat = glm::scale(glm::identity<glm::mat4>(), QuadScale);
+    //QuadModelMat = ScaleMat * TranslationMat * RotationMat ;
+    QuadModelMat = glm::identity<glm::mat4>();
+    */
+   
+   
+
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+
+        std::cerr << error << std::endl;
+    }
 
     CurrentTime = (float)glfwGetTime();
   
@@ -146,15 +151,22 @@ void Update()
 
 void Render()
 {
+ 
     glClear(GL_COLOR_BUFFER_BIT);
+    
   //  GLint ModelMatLoc = glGetUniformLocation(Program_VertexColor, "ModelMat");
    // glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, glm::value_ptr(QuadModelMat));
 /*
     GLint CurrentTimeLoc = glGetUniformLocation(Program_ColorFade, "CurrentTime");
     glUniform1f(CurrentTimeLoc, CurrentTime);*/
 
+    GLint ModelMatLoc = glGetUniformLocation(Program_VertexColor, "ModelMat");
+    glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, &QuadModelMat[0][0]);
+
 
     Hexagon.draw(6);
+
+
     //plus 1 per different point
 
     glfwSwapBuffers(Window);
@@ -196,9 +208,11 @@ int main()
 
     InitialSetup();
 
+ 
     //run funcs while window open
     while (glfwWindowShouldClose(Window) == false)
     {
+       
         Update();
 
         Render();

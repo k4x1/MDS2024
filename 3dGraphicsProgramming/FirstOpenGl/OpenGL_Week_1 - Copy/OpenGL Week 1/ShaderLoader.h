@@ -18,3 +18,4 @@ private:
 	static std::string ReadShaderFile(const char *filename);
 	static void PrintErrorDetails(bool isShader, GLuint id, const char* name);
 };
+

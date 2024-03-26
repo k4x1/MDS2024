@@ -27,6 +27,9 @@ void VertexObject::setVertices(GLfloat* _vertices, GLsizei _VertSize, GLuint* _I
     glBindVertexArray(0);
 }
 
+//make a that has its own vao and draws each object,, draw manager class or something
+
+
 void VertexObject::draw(GLuint _indicesCount)
 {
 
