@@ -24,14 +24,14 @@ GLfloat Vertices_Quad[] = {-0.5f, 0.5f, 0.0f,  /**/   1.0f, 0.0f, 0.0f,  /**/  0
 };
 
 
-glm::vec3 QuadPosition = glm::vec3(1, 1, 1);
-float QuadRotation = 1.0f;
-glm::vec3 QuadScale = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 QuadPosition = glm::vec3(0, 0, 0);
+float QuadRotation = 45.0f;
+glm::vec3 QuadScale = glm::vec3(3.0f, 2.0f, 1.0f);
 
 glm::mat4 TranslationMat;
 glm::mat4 RotationMat;
 glm::mat4 ScaleMat;
-glm::mat4 QuadModelMat = glm::identity<glm::mat4>();
+glm::mat4 QuadModelMat;
 
 GLfloat vertices_Octagon{};
 GLuint Program_PositionOnly = 0;
@@ -124,18 +124,16 @@ void Update()
   
      
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, CoconutTxr);
-    glUniform1i(glGetUniformLocation(Program_Texture, "Texture0"), 0);
 
-    Hexagon.setShader(Program_VertexColor);
-    /*
+
+    Hexagon.setShader(Program_Texture);
+    
     TranslationMat = glm::translate(glm::identity<glm::mat4>(), QuadPosition);
     RotationMat = glm::rotate(glm::identity<glm::mat4>(), glm::radians(QuadRotation), glm::vec3(0.0f, 0.0f, 1.0f));
     ScaleMat = glm::scale(glm::identity<glm::mat4>(), QuadScale);
-    //QuadModelMat = ScaleMat * TranslationMat * RotationMat ;
-    QuadModelMat = glm::identity<glm::mat4>();
-    */
+    QuadModelMat = ScaleMat * TranslationMat * RotationMat ;
+  
+    
    
    
 
@@ -146,7 +144,8 @@ void Update()
     }
 
     CurrentTime = (float)glfwGetTime();
-  
+
+
 }
 
 void Render()
@@ -159,8 +158,11 @@ void Render()
 /*
     GLint CurrentTimeLoc = glGetUniformLocation(Program_ColorFade, "CurrentTime");
     glUniform1f(CurrentTimeLoc, CurrentTime);*/
-
-    GLint ModelMatLoc = glGetUniformLocation(Program_VertexColor, "ModelMat");
+    glUseProgram(Program_Texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, CoconutTxr);
+    glUniform1i(glGetUniformLocation(Program_Texture, "Texture0"), 0);
+    GLint ModelMatLoc = glGetUniformLocation(Program_Texture, "ModelMat");
     glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, &QuadModelMat[0][0]);
 
 

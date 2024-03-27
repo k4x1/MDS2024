@@ -33,7 +33,7 @@ void VertexObject::setVertices(GLfloat* _vertices, GLsizei _VertSize, GLuint* _I
 void VertexObject::draw(GLuint _indicesCount)
 {
 
-    glUseProgram(Shader_ID);
+  
     glBindVertexArray(VAO_ID);
   
     glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, nullptr);
