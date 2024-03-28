@@ -57,5 +57,5 @@ void VertexObject::defineModelMatrix(glm::vec3 QuadPosition, float QuadRotation,
     TranslationMat = glm::translate(glm::identity<glm::mat4>(), QuadPosition);
     RotationMat = glm::rotate(glm::identity<glm::mat4>(), glm::radians(QuadRotation), glm::vec3(0.0f, 0.0f, 1.0f));
     ScaleMat = glm::scale(glm::identity<glm::mat4>(), QuadScale);
-    QuadModelMat = ScaleMat * TranslationMat * RotationMat;
+    ModelMat = ScaleMat * TranslationMat * RotationMat;
 }

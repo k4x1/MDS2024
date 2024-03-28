@@ -19,7 +19,7 @@ class VertexObject
 		glm::mat4 ScaleMat;
 		
 	public:
-		glm::mat4 QuadModelMat;
+		glm::mat4 ModelMat;
 		GLuint getID();
 		void setVertices(GLfloat* _vertices, GLsizei _VertSize, GLuint* _IndicesList, GLsizei _indicesSize);
 		void draw(GLuint _indicesCount);
