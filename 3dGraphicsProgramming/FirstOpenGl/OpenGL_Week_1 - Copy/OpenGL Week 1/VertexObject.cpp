@@ -44,9 +44,18 @@ void VertexObject::draw(GLuint _indicesCount)
 void VertexObject::setShader(GLuint _Shader)
 {
     Shader_ID = _Shader;
+    glUseProgram(Shader_ID);
 }
 
 void VertexObject::setEBO()
 {
 
+}
+
+void VertexObject::defineModelMatrix(glm::vec3 QuadPosition, float QuadRotation, glm::vec3 QuadScale)
+{
+    TranslationMat = glm::translate(glm::identity<glm::mat4>(), QuadPosition);
+    RotationMat = glm::rotate(glm::identity<glm::mat4>(), glm::radians(QuadRotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    ScaleMat = glm::scale(glm::identity<glm::mat4>(), QuadScale);
+    QuadModelMat = ScaleMat * TranslationMat * RotationMat;
 }

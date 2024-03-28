@@ -28,10 +28,7 @@ glm::vec3 QuadPosition = glm::vec3(0, 0, 0);
 float QuadRotation = 45.0f;
 glm::vec3 QuadScale = glm::vec3(3.0f, 2.0f, 1.0f);
 
-glm::mat4 TranslationMat;
-glm::mat4 RotationMat;
-glm::mat4 ScaleMat;
-glm::mat4 QuadModelMat;
+
 
 GLfloat vertices_Octagon{};
 GLuint Program_PositionOnly = 0;
@@ -80,7 +77,7 @@ float CurrentTime = 0;
 int imageWidth;
 int imageHeight;
 int imageComponents;
-unsigned char* ImageData = stbi_load("Resources/Textures/coconut.png" , &imageWidth,&imageHeight,&imageComponents, 0);
+unsigned char* ImageData;
 
 
 
@@ -88,11 +85,13 @@ unsigned char* ImageData = stbi_load("Resources/Textures/coconut.png" , &imageWi
 
 void InitialSetup()
 {
+    ImageData = stbi_load("Resources/Textures/coconut.png", &imageWidth, &imageHeight, &imageComponents, 0);
     if (ImageData == nullptr) {
         std::cerr << "Failed to load image: Resources/Textures/PotionBottle.png" << std::endl;
         // Handle the error or return from the function
     }
-   glGenTextures(1, &CoconutTxr);
+
+    glGenTextures(1, &CoconutTxr);      
     glBindTexture(GL_TEXTURE_2D, CoconutTxr);
     GLint LoadedComponents = (imageComponents == 4) ? GL_RGBA : GL_RGB;
     glTexImage2D(GL_TEXTURE_2D, 0, LoadedComponents, imageWidth, imageHeight, 0, LoadedComponents, GL_UNSIGNED_BYTE, ImageData);
@@ -120,20 +119,8 @@ void InitialSetup()
 
 void Update()
 {
- 
-  
-     
 
-
-
-    Hexagon.setShader(Program_Texture);
-    
-    TranslationMat = glm::translate(glm::identity<glm::mat4>(), QuadPosition);
-    RotationMat = glm::rotate(glm::identity<glm::mat4>(), glm::radians(QuadRotation), glm::vec3(0.0f, 0.0f, 1.0f));
-    ScaleMat = glm::scale(glm::identity<glm::mat4>(), QuadScale);
-    QuadModelMat = ScaleMat * TranslationMat * RotationMat ;
-  
-    
+    Hexagon.defineModelMatrix(QuadPosition, QuadRotation, QuadScale);
    
    
 
@@ -158,12 +145,16 @@ void Render()
 /*
     GLint CurrentTimeLoc = glGetUniformLocation(Program_ColorFade, "CurrentTime");
     glUniform1f(CurrentTimeLoc, CurrentTime);*/
-    glUseProgram(Program_Texture);
+
+    Hexagon.setShader(Program_Texture);
+
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, CoconutTxr);
     glUniform1i(glGetUniformLocation(Program_Texture, "Texture0"), 0);
+
     GLint ModelMatLoc = glGetUniformLocation(Program_Texture, "ModelMat");
-    glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, &QuadModelMat[0][0]);
+    glUniformMatrix4fv(ModelMatLoc, 1, GL_FALSE, &Hexagon.QuadModelMat[0][0]);
 
 
     Hexagon.draw(6);
